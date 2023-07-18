@@ -94,8 +94,6 @@ def typing_test(stdscr, typing_window):
             correct = sum([1 for i in range(len(current_text)) if current_text[i] == target_text[i]])
             accuracy = round(correct / len(current_text) * 100)
 
-        typing_window.clear()
-        typing_window.border()
 
         if len(current_text) == len(target_text):
             return wpm, accuracy
