@@ -1,9 +1,9 @@
-
-
 import curses
 import random
 import textwrap
 import time
+import requests
+import platform
 from curses import wrapper
 
 MAX_SPEED = 0
@@ -39,10 +39,21 @@ def start_screen(stdscr):
     stdscr.getkey()
 
 
-def load_text():
-    with open("Text.txt", "r") as f:
-        content = f.read().replace("\n", " ")
-    return content
+def load_text(desired_length=300):
+    accumulated_text = ""
+    try:
+        while len(accumulated_text) < desired_length:
+            response = requests.get("https://api.quotable.io/random")
+            if response.status_code != 200:
+                raise Exception()
+            data = response.json()
+            if platform.system() == "Windows":
+                data['content'] = data['content'].replace('\'', ' ')
+            accumulated_text += data['content'] + " "
+    except:
+        with open('Text.txt', 'r') as f:
+            accumulated_text = f.read().replace('\n', ' ')
+    return accumulated_text
      
 
 def wrap_text(text, width):
@@ -107,7 +118,7 @@ def typing_test(stdscr, typing_window):
 
         try:
             key = typing_window.getkey()
-        except:
+        except Exception as e:
             continue
 
         if key == chr(27):
@@ -143,6 +154,7 @@ def result_screen(stdscr, typing_window, wpm, accuracy):
             return False
 
 def main(stdscr):
+    content = load_text()
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
@@ -150,11 +162,10 @@ def main(stdscr):
     curses.init_pair(5, curses.COLOR_YELLOW, curses.COLOR_BLACK)
 
     start_screen(stdscr)
-    
+
     while True:
         stdscr.clear()
         stdscr.refresh()
-        content = load_text()
         stdscr.addstr(5 , curses.COLS // 2 - 5, "Flash⚡Type", curses.color_pair(5))
         stdscr.refresh()
         Typing_window = curses.newwin(curses.LINES - 20, curses.COLS - 20, 10, 10)
@@ -165,6 +176,6 @@ def main(stdscr):
             continue
         else:
             break
-        
 
-wrapper(main)
+if __name__ == "__main__":
+    wrapper(main)
