@@ -71,13 +71,13 @@ def display_text(stdscr, Type_win, target_text, current_text, wpm=0, accuracy=0)
     Type_win.addstr(Type_win_height - 2, Type_win_width // 2 - 10, f"WPM: {wpm}")
     Type_win.addstr(Type_win_height - 2, Type_win_width // 2 , f"Accuracy: {accuracy}%")
 
-    target_text = ";".join(target_text)
+    target_text = "\n".join(target_text) # Convert list to string
     
     col = 5
     indx = 0
 
     for i, char in enumerate(current_text):
-        if target_text[i] == ";":
+        if target_text[i] == "\n": # If newline character is encountered
             col = 5
             indx += 1
         else:    
@@ -125,7 +125,7 @@ def typing_test(stdscr, typing_window):
             return wpm, accuracy
         
         if key in ("KEY_ENTER", "\n"):
-            current_text.append("\n")
+            pass # Ignore enter key
 
         if key in ("KEY_BACKSPACE", '\b', "\x7f"):
             if len(current_text) > 0:
