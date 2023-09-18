@@ -54,7 +54,7 @@ def load_text(desired_length=300):
         with open('Text.txt', 'r') as f:
             accumulated_text = f.read().replace('\n', ' ')
     return accumulated_text
-     
+   
 
 def wrap_text(text, width):
     wrapped_text = textwrap.wrap(text, width)
@@ -71,13 +71,12 @@ def display_text(stdscr, Type_win, target_text, current_text, wpm=0, accuracy=0)
     Type_win.addstr(Type_win_height - 2, Type_win_width // 2 - 10, f"WPM: {wpm}")
     Type_win.addstr(Type_win_height - 2, Type_win_width // 2 , f"Accuracy: {accuracy}%")
 
-    target_text = ";".join(target_text)
-    
+    target_text = ":".join(target_text)
     col = 5
     indx = 0
 
     for i, char in enumerate(current_text):
-        if target_text[i] == ";":
+        if target_text[i] == ":":
             col = 5
             indx += 1
         else:    
@@ -123,11 +122,13 @@ def typing_test(stdscr, typing_window):
 
         if key == chr(27):
             return wpm, accuracy
-        
-        if key in ("KEY_ENTER", "\n"):
-            current_text.append("\n")
 
-        if key in ("KEY_BACKSPACE", '\b', "\x7f"):
+        elif key == '\n':
+            curses.noecho()
+            current_text.append('_')
+
+
+        elif key in ("KEY_BACKSPACE", '\b', "\x7f"):
             if len(current_text) > 0:
                 current_text.pop()
 
