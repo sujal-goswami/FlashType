@@ -72,6 +72,7 @@ def display_text(stdscr, Type_win, target_text, current_text, wpm=0, accuracy=0)
     Type_win.addstr(Type_win_height - 2, Type_win_width // 2 , f"Accuracy: {accuracy}%")
 
     target_text = "\n".join(target_text) # Convert list to string
+
     
     col = 5
     indx = 0
@@ -123,9 +124,9 @@ def typing_test(stdscr, typing_window):
 
         if key == chr(27):
             return wpm, accuracy
-        
+
         if key in ("KEY_ENTER", "\n"):
-            pass # Ignore enter key
+            continue
 
         if key in ("KEY_BACKSPACE", '\b', "\x7f"):
             if len(current_text) > 0:
